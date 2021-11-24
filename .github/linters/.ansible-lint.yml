@@ -1,0 +1,10 @@
+---
+exclude_paths:
+  - .git/
+  - .vagrant/
+  - .venv/
+  - .idea/
+  - .vscode/
+  - docs/
+use_default_rules: true
+verbosity: 1

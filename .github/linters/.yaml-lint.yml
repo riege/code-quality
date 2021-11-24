@@ -1,0 +1,16 @@
+---
+extends: default
+
+rules:
+  braces:
+    max-spaces-inside: 1
+  brackets:
+    max-spaces-inside: 1
+  document-start: disable
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+  line-length: disable
+  truthy:
+    level: warning
+    allowed-values: ["true", "false", "on"]
