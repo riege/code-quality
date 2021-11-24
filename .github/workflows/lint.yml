@@ -6,5 +6,5 @@ on:
     branches: [main]
 
 jobs:
-  call-workflow:
-    uses: "riege/code-quality/.github/workflows/super-linter.yml@main"
+  call-lint-workflow:
+    uses: "riege/code-quality/.github/workflows/super-linter.yml@how-to-use"
