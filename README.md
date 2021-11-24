@@ -1,6 +1,6 @@
 # code-quality
 
-Linter configurations and Github Action workflow for super-linter
+Linter configurations and GitHub Action workflow for super-linter
 
 ## How To Use
 
