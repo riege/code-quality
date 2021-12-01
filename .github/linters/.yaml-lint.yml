@@ -6,6 +6,10 @@ rules:
     max-spaces-inside: 1
   brackets:
     max-spaces-inside: 1
+  comments:
+    require-starting-space: true
+    ignore-shebangs: true
+    min-spaces-from-content: 1
   document-start: disable
   indentation:
     spaces: 2
