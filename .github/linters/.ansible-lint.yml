@@ -8,3 +8,5 @@ exclude_paths:
   - docs/
 use_default_rules: true
 verbosity: 1
+skip_list:
+  - yaml
