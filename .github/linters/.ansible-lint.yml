@@ -1,12 +1,12 @@
 ---
 exclude_paths:
-  - .git/
-  - .github/
-  - .vagrant/
-  - .venv/
-  - .idea/
-  - .vscode/
-  - docs/
+  - /github/workspace/.git/
+  - /github/workspace/.github/
+  - /github/workspace/.vagrant/
+  - /github/workspace/.venv/
+  - /github/workspace/.idea/
+  - /github/workspace/.vscode/
+  - /github/workspace/docs/
 use_default_rules: true
 verbosity: 1
 skip_list:
