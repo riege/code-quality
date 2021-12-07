@@ -46,7 +46,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/.github/linters/"
+          LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/.github/linters"
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
           VALIDATE_JSCPD: false
           VALIDATE_NATURAL_LANGUAGE: false
