@@ -4,6 +4,16 @@ name: Reusable super-linter workflow
 on:
   workflow_call:
     inputs:
+      CODEQUALITY_PATH:
+        required: false
+        type: string
+        default: "super-linter"
+        description: "Path name for the code-quality sources."
+      CODEQUALITY_REF:
+        required: false
+        type: string
+        default: "main"
+        description: "Reference of the code-quality repo to use."
       ANSIBLE_DIRECTORY:
         required: false
         type: string
@@ -23,12 +33,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout code-quality Code
+        uses: actions/checkout@v2
+        with:
+          repository: riege/code-quality
+          path: ${{ inputs.CODEQUALITY_PATH }}
+          ref: ${{ inputs.CODEQUALITY_REF }}
+
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/.github/linters/"
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
           VALIDATE_JSCPD: false
           VALIDATE_NATURAL_LANGUAGE: false
