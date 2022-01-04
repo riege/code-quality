@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="error"/>
+    <module name="RegexpSingleline">
+        <property name="format" value="^[^=]+([^ ]|( ){2,})="/>
+        <property name="fileExtensions" value="properties"/>
+        <property name="message" value="Single whitespace before equal sign"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^[^=]+=([^ ]|( ){2,})"/>
+        <property name="fileExtensions" value="properties"/>
+        <property name="message" value="Single whitespace after equal sign"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="message" value="Trailing whitespace"/>
+    </module>
+    <!-- Don't allow JavaDoc "@author" tags -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^\s*\*\s*@author" />
+        <property name="minimum" value="0" />
+        <property name="maximum" value="0" />
+        <property name="message" value="JavaDoc has illegal ''author'' tag." />
+        <property name="fileExtensions" value="java" />
+    </module>
+    <module name="LineLength">
+        <property name="ignorePattern"
+                  value="^ *(((public|private|protected)? (static final|abstract))|@ImportFieldCompletion|@Update|@Field|@AttributeOverride|public (abstract |final )?(class|interface|enum)|assertEquals|[\p{Upper}\p{Digit}_]* *(\(|,))"/>
+        <property name="max" value="100"/>
+        <property name="fileExtensions" value="java"/>
+    </module>
+    <module name="TreeWalker">
+        <module name="Regexp">
+            <property name="id" value="Copyright"/>
+            <property name="format"
+                      value="\A/\*(\r\n|\n) \* Copyright \(c\) \d{4}(-\d{4})? Riege Software( International)?\. All rights reserved\.(\r\n|\n) \* Use is subject to license terms\.(\r\n|\n) \*/"/>
+            <property name="message" value="Copyright"/>
+        </module>
+        <module name="Regexp">
+            <property name="format" value="\.$"/>
+            <property name="ignoreComments" value="true"/>
+            <property name="illegalPattern" value="true"/>
+            <property name="message" value="No trailing dots"/>
+        </module>
+        <module name="AnnotationUseStyle"/>
+        <module name="MissingOverride"/>
+        <module name="PackageAnnotation"/>
+        <module name="SuppressWarnings"/>
+        <module name="ClassTypeParameterName">
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName">
+            <property name="format"
+                      value="^[a-z][a-zA-Z0-9_]*$|ID|OID|^EU.*$|^GB.*$|^US.*$|^BIN.*$|^MRN.*$|^GRN.*$|^URN.*$|^PLZ.*$|^ZIP.*$|^EORI.*$|^TIN.*$|^IATA.*$|^AWB.*$|^VAT.*$|^DPI.*$"/>
+        </module>
+        <module name="LocalVariableName">
+            <property name="format"
+                      value="^[a-z][a-zA-Z0-9_]*$|ID|OID|^EU.*$|^GB.*$|^US.*$|^BIN.*$|^MRN.*$|^GRN.*$|^URN.*$|^PLZ.*$|^ZIP.*$|^EORI.*$|^TIN.*$|^IATA.*$|^AWB.*$|^VAT.*$|^DPI.*$"/>
+        </module>
+        <module name="MemberName">
+            <property name="format"
+                      value="^[a-z][a-zA-Z0-9_]*$|ID|OID|^EU.*$|^GB.*$|^US.*$|^BIN.*$|^MRN.*$|^GRN.*$|^URN.*$|^PLZ.*$|^ZIP.*$|^EORI.*$|^TIN.*$|^IATA.*$|^AWB.*$|^VAT.*$|^DPI.*$"/>
+        </module>
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9_]*$"/>
+        </module>
+        <module name="MethodTypeParameterName">
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="PackageName"/>
+        <module name="ParameterName">
+            <property name="format"
+                      value="^[a-z][a-zA-Z0-9_]*$|ID|OID|^EU.*$|^GB.*$|^US.*$|^BIN.*$|^MRN.*$|^GRN.*$|^URN.*$|^PLZ.*$|^ZIP.*$|^EORI.*$|^TIN.*$|^IATA.*$|^AWB.*$|^VAT.*$|^DPI.*$"/>
+        </module>
+        <module name="StaticVariableName">
+            <property name="format"
+                      value="^[a-z][a-zA-Z0-9_]*$|ID|OID|^EU.*$|^GB.*$|^US.*$|^BIN.*$|^MRN.*$|^GRN.*$|^URN.*$|^PLZ.*$|^ZIP.*$|^EORI.*$|^TIN.*$|^IATA.*$|^AWB.*$|^VAT.*$|^DPI.*$"/>
+        </module>
+        <module name="TypeName">
+            <property name="format" value="^[A-Z][a-zA-Z0-9_]*$"/>
+        </module>
+        <module name="AvoidStarImport">
+            <property name="allowStaticMemberImports" value="true"/>
+        </module>
+        <module name="IllegalImport">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ImportOrder">
+            <property name="groups"
+                      value="io, java, javax, junit, org, com, com.jgoodies, com.riege"/>
+            <property name="ordered" value="false"/>
+            <property name="separated" value="true"/>
+            <property name="option" value="bottom"/>
+            <property name="sortStaticImportsAlphabetically" value="true"/>
+            <property name="separatedStaticGroups" value="true"/>
+            <property name="staticGroups"
+                      value="io, java, javax, junit, org, com, com.jgoodies, com.riege"/>
+        </module>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports">
+            <property name="processJavadoc" value="true"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="max" value="12"/>
+            <property name="severity" value="warning"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <module name="OuterTypeNumber"/>
+        <module name="GenericWhitespace"/>
+        <module name="EmptyForInitializerPad"/>
+        <module name="EmptyForIteratorPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore">
+            <property name="allowLineBreaks" value="true"/>
+        </module>
+        <module name="OperatorWrap"/>
+        <module name="MethodParamPad">
+            <property name="option" value="nospace"/>
+            <property name="tokens"
+                      value="CTOR_DEF,LITERAL_NEW,METHOD_DEF,SUPER_CTOR_CALL"/>
+        </module>
+        <module name="ParenPad">
+            <property name="option" value="nospace"/>
+            <property name="tokens" value="CTOR_CALL,SUPER_CTOR_CALL"/>
+        </module>
+        <module name="TypecastParenPad">
+            <property name="tokens" value="RPAREN,TYPECAST"/>
+        </module>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround">
+            <property name="tokens"
+                      value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,EQUAL,GE,GT,LAND,LE,LITERAL_ASSERT,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,QUESTION,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,TYPE_EXTENSION_AND"/>
+            <property name="allowEmptyConstructors" value="false"/>
+            <property name="allowEmptyMethods" value="false"/>
+            <property name="ignoreEnhancedForColon" value="false"/>
+        </module>
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+        </module>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+        <module name="CovariantEquals"/>
+        <module name="DefaultComesLast"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="ExplicitInitialization"/>
+        <module name="FallThrough"/>
+        <module name="IllegalInstantiation"/>
+        <module name="IllegalThrows">
+            <property name="severity" value="warning"/>
+            <property name="illegalClassNames" value="java.lang.Error, java.lang.RuntimeException"/>
+        </module>
+        <module name="IllegalTokenText"/>
+        <module name="ModifiedControlVariable"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="NestedIfDepth">
+            <property name="max" value="3"/>
+        </module>
+        <module name="NestedTryDepth">
+            <property name="max" value="3"/>
+        </module>
+        <module name="NoFinalizer"/>
+        <module name="PackageDeclaration"/>
+        <module name="ParameterAssignment"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="SuperClone"/>
+        <module name="SuperFinalize"/>
+        <module name="UnnecessaryParentheses"/>
+        <module name="OneStatementPerLine"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="MutableException"/>
+        <module name="VisibilityModifier">
+            <property name="packageAllowed" value="true"/>
+            <property name="protectedAllowed" value="true"/>
+        </module>
+        <module name="ArrayTypeStyle"/>
+        <module name="DescendantToken"/>
+        <module name="UpperEll"/>
+        <module name="Regexp">
+            <property name="format" value="System\.out\.println"/>
+            <property name="illegalPattern" value="true"/>
+            <property name="ignoreComments" value="true"/>
+        </module>
+        <module name="OuterTypeFilename"/>
+        <module name="TodoComment">
+            <property name="format" value="(TODO)|(FIXME)"/>
+        </module>
+        <module name="SuppressionCommentFilter"/>
+        <module name="EmptyLineSeparator">
+            <property name="tokens" value="IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF, INSTANCE_INIT, CTOR_DEF, STATIC_IMPORT"/>
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+            <property name="allowMultipleEmptyLines" value="false"/>
+            <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
+        </module>
+        <module name="NoLineWrap">
+            <property name="tokens" value="IMPORT,STATIC_IMPORT,PACKAGE_DEF"/>
+        </module>
+    </module>
+    <module name="FileTabCharacter">
+        <property name="id" value="NoTabs"/>
+        <property name="fileExtensions" value="java, groovy, properties"/>
+    </module>
+    <module name="NewlineAtEndOfFile">
+        <property name="lineSeparator" value="lf"/>
+        <property name="fileExtensions" value="java, groovy, properties"/>
+    </module>
+    <module name="OrderedProperties"/>
+    <module name="UniqueProperties" />
+</module>
