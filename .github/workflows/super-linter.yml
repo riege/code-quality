@@ -43,10 +43,14 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
         env:
-          VALIDATE_ALL_CODEBASE: false
+          ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
+          ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/.github/linters"
-          ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
+          JAVA_FILE_NAME: java/checkstyle/checkstyle.xml
+          LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/"
+          MARKDOWN_CONFIG_FILE: markdown/.markdown-lint.yml
+          VALIDATE_ALL_CODEBASE: false
           VALIDATE_JSCPD: false
           VALIDATE_NATURAL_LANGUAGE: false
+          YAML_CONFIG_FILE: yaml/.yaml-lint.yml
