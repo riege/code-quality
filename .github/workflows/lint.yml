@@ -6,3 +6,5 @@ on:
 jobs:
   call-lint-workflow:
     uses: "riege/code-quality/.github/workflows/super-linter.yml@main"
+    with:
+      ANSIBLE_DIRECTORY: /dev/null
