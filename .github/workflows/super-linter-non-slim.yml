@@ -22,6 +22,10 @@ on:
           "Flag to set the root directory for Ansible file location(s),
           relative to DEFAULT_WORKSPACE. Set to . to use the top-level of
           the DEFAULT_WORKSPACE."
+    secrets:
+      GITHUB_TOKEN:
+        required: false
+        description: "GitHub token to mark status of each individual linter run in checks."
 
 jobs:
   build:
