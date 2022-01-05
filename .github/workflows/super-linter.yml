@@ -46,6 +46,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ github.token }}
+          KUBERNETES_KUBEVAL_OPTIONS: --ignore-missing-schemas
           LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/.github/linters"
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
           VALIDATE_JSCPD: false
