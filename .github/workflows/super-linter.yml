@@ -46,7 +46,7 @@ jobs:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
           DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
           JAVA_FILE_NAME: java/checkstyle/checkstyle.xml
           LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/"
           MARKDOWN_CONFIG_FILE: markdown/.markdown-lint.yml
