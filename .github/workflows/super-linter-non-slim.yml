@@ -48,6 +48,7 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ github.token }}
           JAVA_FILE_NAME: java/checkstyle/checkstyle.xml
+          KUBERNETES_KUBEVAL_OPTIONS: --ignore-missing-schemas
           LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/"
           MARKDOWN_CONFIG_FILE: markdown/.markdown-lint.yml
           VALIDATE_ALL_CODEBASE: false
