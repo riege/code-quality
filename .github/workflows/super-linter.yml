@@ -22,6 +22,15 @@ on:
           "Flag to set the root directory for Ansible file location(s),
           relative to DEFAULT_WORKSPACE. Set to . to use the top-level of
           the DEFAULT_WORKSPACE."
+      FILTER_REGEX_EXCLUDE:
+        required: false
+        type: string
+        default: ""
+        description: >
+          "If you need to exclude some files from linting, you can use this.
+          Do not lint sql files: FILTER_REGEX_EXCLUDE: .*.sql
+          Do not lint files inside test folder: FILTER_REGEX_EXCLUDE: .*test/.*
+          Do not lint JavaScript files inside test folder: FILTER_REGEX_EXCLUDE: .*test/.*.js"
 
 jobs:
   build:
@@ -46,6 +55,7 @@ jobs:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
           DEFAULT_BRANCH: main
+          FILTER_REGEX_EXCLUDE: "${{ inputs.FILTER_REGEX_EXCLUDE }}"
           GITHUB_TOKEN: ${{ github.token }}
           JAVA_FILE_NAME: java/checkstyle/checkstyle.xml
           KUBERNETES_KUBEVAL_OPTIONS: --ignore-missing-schemas
