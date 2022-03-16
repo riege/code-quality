@@ -13,3 +13,5 @@ skip_list:
   - yaml
 # Offline mode disables installation of requirements.yml
 offline: true
+kinds:
+  - inventory: "**/{inventory,inventories}/**/*.{yml,yaml}"
