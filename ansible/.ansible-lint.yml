@@ -11,7 +11,5 @@ use_default_rules: true
 verbosity: 1
 skip_list:
   - yaml
-# Offline mode disables installation of requirements.yml
-offline: true
 kinds:
   - inventory: "**/{inventory,inventories}/**/*.{yml,yaml}"
