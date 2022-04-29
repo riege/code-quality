@@ -57,6 +57,9 @@ jobs:
           path: ${{ inputs.CODEQUALITY_PATH }}
           ref: ${{ inputs.CODEQUALITY_REF }}
 
+      - name: Configure git for private modules
+        run: git config --global url."https://${{ github.token }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
         env:
