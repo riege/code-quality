@@ -3,3 +3,4 @@ default: true
 MD013:
   tables: false
   strict: false
+  line_length: 120
