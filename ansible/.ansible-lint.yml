@@ -13,3 +13,4 @@ skip_list:
   - yaml
 kinds:
   - inventory: "**/{inventory,inventories}/**/*.{yml,yaml}"
+offline: true
