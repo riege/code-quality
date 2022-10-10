@@ -11,6 +11,7 @@ use_default_rules: true
 verbosity: 1
 skip_list:
   - yaml
+  - name[casing]
 kinds:
   - inventory: "**/{inventory,inventories}/**/*.{yml,yaml}"
 offline: true
