@@ -62,4 +62,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: "${{ inputs.VALIDATE_ALL_CODEBASE }}"
           VALIDATE_JSCPD: false
           VALIDATE_NATURAL_LANGUAGE: false
+          VALIDATE_KUBERNETES_KUBEVAL: false
           YAML_CONFIG_FILE: yaml/.yaml-lint.yml
