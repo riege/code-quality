@@ -13,6 +13,7 @@ verbosity: 1
 skip_list:
   - yaml
   - name[casing]
+  - name[template]
 kinds:
   - inventory: "**/{inventory,inventories}/**/*.{yml,yaml}"
 offline: true
