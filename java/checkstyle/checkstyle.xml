@@ -214,6 +214,7 @@
         <property name="lineSeparator" value="lf"/>
         <property name="fileExtensions" value="java, groovy, properties"/>
     </module>
+    <module name="OrderedProperties"/>
     <module name="UniqueProperties" />
     <module name="SuppressWithPlainTextCommentFilter">
         <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
