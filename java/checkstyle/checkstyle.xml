@@ -92,7 +92,7 @@
         </module>
         <module name="ImportOrder">
             <property name="groups"
-                      value="io, java, javax, junit, org, com, com.jgoodies, com.riege"/>
+                      value="io, java, javax, jakarta, junit, org, com, com.jgoodies, com.riege"/>
             <property name="ordered" value="false"/>
             <property name="separated" value="true"/>
             <property name="option" value="bottom"/>
