@@ -20,6 +20,11 @@ rule "terraform_unused_required_providers" {
   enabled = true
 }
 
+// we do not want to enforce specifying a required Terraform version as we usually run the configs with the latest version
+rule "terraform_required_version" {
+  enabled = false
+}
+
 // add special rules for MS Azure
 plugin "azure" {
   enabled = true
