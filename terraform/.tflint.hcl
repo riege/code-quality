@@ -25,8 +25,8 @@ rule "terraform_required_version" {
   enabled = false
 }
 
-// add special rules for MS Azure
-plugin "azure" {
+// add special rules for MS Azure Resource Manager
+plugin "azurerm" {
   enabled = true
   version = "0.23.0"
   source  = "github.com/terraform-linters/tflint-ruleset-azurerm"
