@@ -1,1 +1,5 @@
-* @riege/connect @riege/core @riege/plops
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+
+# These owners will be the default reviewers for everything in the repo.
+* @riege/core @riege/operations
