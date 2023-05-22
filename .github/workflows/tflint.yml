@@ -1,0 +1,45 @@
+name: Reusable tflint workflow
+
+on:
+  workflow_call:
+    inputs:
+      CODEQUALITY_REF:
+        required: false
+        type: string
+        default: "main"
+        description: "Reference of the code-quality repo to use."
+
+jobs:
+  tflint:
+    name: Run tflint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - uses: terraform-linters/tflint-load-config-action@v0
+        with:
+          source-repo: riege/code-quality
+          source-path: terraform/.tflint.hcl
+          source-ref: ${{ inputs.CODEQUALITY_REF }}
+
+      - name: Determine tflint config file location
+        run: |
+          echo "TFLINT_CONFIG_FILE=$HOME/.tflint.hcl" >> "$GITHUB_ENV"
+
+      - uses: actions/cache@v3
+        name: Cache plugin dir
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles(env.TFLINT_CONFIG_FILE) }}
+
+      - uses: terraform-linters/setup-tflint@v3
+        name: Setup TFLint
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint --format=compact --recursive
