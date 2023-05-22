@@ -43,4 +43,12 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
-        run: tflint --format=compact --recursive --config=$TFLINT_CONFIG_FILE
+        run: tflint --format=checkstyle --recursive --config=$TFLINT_CONFIG_FILE > tflint-report.xml
+
+      - name: Report Result
+        uses: jwgmeligmeyling/checkstyle-github-action@master
+        if: success() || failure()
+        with:
+          title: TFLINT Report
+          name: tflint Report
+          path: tflint-report.xml
