@@ -23,6 +23,7 @@ jobs:
           source-path: terraform/.tflint.hcl
           source-ref: ${{ inputs.CODEQUALITY_REF }}
           destination-path: ${{ github.workspace }}/.tflint.hcl
+          token: ${{ github.token }}
 
       - name: Determine tflint config file location
         run: |
