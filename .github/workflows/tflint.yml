@@ -22,10 +22,11 @@ jobs:
           source-repo: riege/code-quality
           source-path: terraform/.tflint.hcl
           source-ref: ${{ inputs.CODEQUALITY_REF }}
+          destination-path: ${{ github.workspace }}/.tflint.hcl
 
       - name: Determine tflint config file location
         run: |
-          echo "TFLINT_CONFIG_FILE=$HOME/.tflint.hcl" >> "$GITHUB_ENV"
+          echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/.tflint.hcl" >> "$GITHUB_ENV"
 
       - uses: actions/cache@v3
         name: Cache plugin dir
@@ -37,9 +38,9 @@ jobs:
         name: Setup TFLint
 
       - name: Init TFLint
-        run: tflint --init
+        run: tflint --init --config=$TFLINT_CONFIG_FILE
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
-        run: tflint --format=compact --recursive
+        run: tflint --format=compact --recursive --config=$TFLINT_CONFIG_FILE
