@@ -38,16 +38,15 @@ jobs:
             echo '#### Terraform Initialization ⚙️ `${{ steps.init.outcome }}`' >> $GITHUB_STEP_SUMMARY
             echo '#### Terraform Validation 🤖 `${{ steps.validate.outcome }}`' >> $GITHUB_STEP_SUMMARY
             echo '<details><summary>Format and Style Output</summary>' >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo -e '\n```' >> $GITHUB_STEP_SUMMARY
             echo '${{ steps.fmt.outputs.stdout }}' >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-            echo '</details>' >> $GITHUB_STEP_SUMMARY
+            echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
             echo '<details><summary>Validation Output</summary>' >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo -e '\n```' >> $GITHUB_STEP_SUMMARY
             echo '${{ steps.validate.outputs.stdout }}' >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-            echo '</details>' >> $GITHUB_STEP_SUMMARY
-            echo '*Pusher: @${{ github.actor }}, Action: `${{ github.event_name }}`, Workflow: `${{ github.workflow }}`*' >> $GITHUB_STEP_SUMMARY
+            echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
 
       - uses: terraform-linters/tflint-load-config-action@v0
         with:
