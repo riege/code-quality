@@ -17,22 +17,23 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - uses: hashicorp/setup-terraform@v2
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v2
 
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check -recursive -diff
         continue-on-error: true
 
-      - name: Terraform Init
+      - name: Terraform init
         id: init
         run: terraform init -backend=false
 
-      - name: Terraform Validate
+      - name: Terraform validate
         id: validate
         run: terraform validate -no-color
 
-      - name: Create Job Summary
+      - name: Create job summary
         run: |
             echo '#### Terraform Format and Style 🖌 `${{ steps.fmt.outcome }}`' >> $GITHUB_STEP_SUMMARY
             echo '#### Terraform Initialization ⚙️ `${{ steps.init.outcome }}`' >> $GITHUB_STEP_SUMMARY
@@ -48,7 +49,7 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
 
-      - name: Load TFLint Config
+      - name: Load TFLint config
         uses: terraform-linters/tflint-load-config-action@v0
         with:
           source-repo: riege/code-quality
@@ -57,7 +58,7 @@ jobs:
           destination-path: ${{ github.workspace }}/.tflint.hcl
           token: ${{ github.token }}
 
-      - name: Determine tflint config file location
+      - name: Determine TFLint config file location
         run: |
           echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/.tflint.hcl" >> "$GITHUB_ENV"
 
@@ -76,11 +77,23 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
-        run: tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE" > tflint-report.xml
+        if: github.event_name != 'pull_request'
+        run: |
+          TFLINT_OUTPUT=$(tflint --recursive --config="$TFLINT_CONFIG_FILE")
+          echo '<details><summary>TFLint Output</summary>' >> $GITHUB_STEP_SUMMARY
+          echo -e '\n```' >> $GITHUB_STEP_SUMMARY
+          echo "$TFLINT_OUTPUT" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
+
+      - name: Run TFLint (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE" > tflint-report.xml
 
       - name: Report Result
         uses: jwgmeligmeyling/checkstyle-github-action@master
-        if: success() || failure()
+        if: github.event_name == 'pull_request' && (success() || failure())
         with:
           title: TFLINT Report
           name: tflint Report
