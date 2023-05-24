@@ -99,7 +99,7 @@
             <property name="sortStaticImportsAlphabetically" value="true"/>
             <property name="separatedStaticGroups" value="true"/>
             <property name="staticGroups"
-                      value="io, java, javax, junit, org, com, com.jgoodies, com.riege"/>
+                      value="io, java, javax, jakarta, junit, org, com, com.jgoodies, com.riege"/>
         </module>
         <module name="RedundantImport"/>
         <module name="UnusedImports">
