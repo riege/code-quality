@@ -48,7 +48,8 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
 
-      - uses: terraform-linters/tflint-load-config-action@v0
+      - name: Load TFLint Config
+        uses: terraform-linters/tflint-load-config-action@v0
         with:
           source-repo: riege/code-quality
           source-path: terraform/.tflint.hcl
@@ -60,14 +61,14 @@ jobs:
         run: |
           echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/.tflint.hcl" >> "$GITHUB_ENV"
 
-      - uses: actions/cache@v3
-        name: Cache plugin dir
+      - name: Cache plugin dir
+        uses: actions/cache@v3
         with:
           path: ~/.tflint.d/plugins
           key: tflint-${{ hashFiles(env.TFLINT_CONFIG_FILE) }}
 
-      - uses: terraform-linters/setup-tflint@v3
-        name: Setup TFLint
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
 
       - name: Init TFLint
         run: tflint --init --config="$TFLINT_CONFIG_FILE"
