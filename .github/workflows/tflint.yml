@@ -79,12 +79,15 @@ jobs:
       - name: Run TFLint
         if: github.event_name != 'pull_request'
         run: |
+          set +e
           TFLINT_OUTPUT=$(tflint --recursive --config="$TFLINT_CONFIG_FILE")
+          EXITCODE=$?
           echo '<details><summary>TFLint Output</summary>' >> $GITHUB_STEP_SUMMARY
           echo -e '\n```' >> $GITHUB_STEP_SUMMARY
           echo "$TFLINT_OUTPUT" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
+          exit $EXITCODE
 
       - name: Run TFLint (PR)
         if: github.event_name == 'pull_request'
