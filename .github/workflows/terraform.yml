@@ -29,6 +29,8 @@ jobs:
       - name: Terraform init
         id: init
         if: ${{ !inputs.skip_init }}
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_CLOUD_ACCESS_TOKEN }}
         run: terraform init -backend=false
 
       - name: Terraform validate
