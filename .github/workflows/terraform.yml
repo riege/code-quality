@@ -1,0 +1,109 @@
+name: Reusable Terraform workflow
+
+on:
+  workflow_call:
+    inputs:
+      CODEQUALITY_REF:
+        required: false
+        type: string
+        default: "main"
+        description: "Reference of the code-quality repo to use."
+
+jobs:
+  terraform:
+    name: Check Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check -recursive -diff
+        continue-on-error: true
+
+      - name: Terraform init
+        id: init
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Create job summary
+        run: |
+          # shellcheck disable=SC2016
+          {
+            echo '#### Terraform Format and Style 🖌 `${{ steps.fmt.outcome }}`'
+            echo '#### Terraform Initialization ⚙️ `${{ steps.init.outcome }}`'
+            echo '#### Terraform Validation 🤖 `${{ steps.validate.outcome }}`'
+            echo '<details><summary>Format and Style Output</summary>'
+            echo -e '\n```'
+            echo '${{ steps.fmt.outputs.stdout }}'
+            echo '```'
+            echo -e '\n</details>'
+            echo '<details><summary>Validation Output</summary>'
+            echo -e '\n```'
+            echo '${{ steps.validate.outputs.stdout }}'
+            echo '```'
+            echo -e '\n</details>'
+          }  >> "$GITHUB_STEP_SUMMARY"
+
+
+      - name: Load TFLint config
+        uses: terraform-linters/tflint-load-config-action@v0
+        with:
+          source-repo: riege/code-quality
+          source-path: terraform/.tflint.hcl
+          source-ref: ${{ inputs.CODEQUALITY_REF }}
+          destination-path: ${{ github.workspace }}/.tflint.hcl
+          token: ${{ github.token }}
+
+      - name: Determine TFLint config file location
+        run: |
+          echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/.tflint.hcl" >> "$GITHUB_ENV"
+
+      - name: Cache plugin dir
+        uses: actions/cache@v3
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles(env.TFLINT_CONFIG_FILE) }}
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
+
+      - name: Init TFLint
+        run: tflint --init --config="$TFLINT_CONFIG_FILE"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        if: github.event_name != 'pull_request'
+        run: |
+          set +e
+          TFLINT_OUTPUT=$(tflint --recursive --config="$TFLINT_CONFIG_FILE")
+          EXITCODE=$?
+          {
+            echo '<details><summary>TFLint Output</summary>'
+            echo -e '\n```'
+            echo "$TFLINT_OUTPUT"
+            echo '```'
+            echo -e '\n</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit $EXITCODE
+
+      - name: Run TFLint (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE" > tflint-report.xml
+
+      - name: Report Result
+        uses: jwgmeligmeyling/checkstyle-github-action@master
+        if: github.event_name == 'pull_request' && (success() || failure())
+        with:
+          title: TFLint Report
+          name: TFLint Report
+          path: tflint-report.xml
