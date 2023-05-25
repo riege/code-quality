@@ -1,4 +1,4 @@
-name: Reusable tflint workflow
+name: Reusable Terraform workflow
 
 on:
   workflow_call:
@@ -10,8 +10,8 @@ on:
         description: "Reference of the code-quality repo to use."
 
 jobs:
-  tflint:
-    name: Run tflint
+  terraform:
+    name: Check Terraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
