@@ -3,11 +3,12 @@ name: Reusable Terraform workflow
 on:
   workflow_call:
     inputs:
-      CODEQUALITY_REF:
-        required: false
-        type: string
-        default: "main"
-        description: "Reference of the code-quality repo to use."
+      skip_init:
+        type: boolean
+        description: "Set to 'true' if Terraform initialization shall be skipped. Might be necessary in some rare cases."
+      skip_validate:
+        type: boolean
+        description: "Set to 'true' if Terraform validation shall be skipped. Might be necessary in some rare cases."
 
 jobs:
   terraform:
@@ -27,10 +28,12 @@ jobs:
 
       - name: Terraform init
         id: init
+        if: !inputs.skip_init
         run: terraform init -backend=false
 
       - name: Terraform validate
         id: validate
+        if: !inputs.skip_validate
         run: terraform validate -no-color
 
       - name: Create job summary
