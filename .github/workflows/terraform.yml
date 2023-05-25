@@ -24,21 +24,18 @@ jobs:
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check -recursive -diff
-        continue-on-error: true
 
       - name: Terraform init
         id: init
-        if: ${{ !inputs.skip_init }}
+        if: ${{ !inputs.skip_init && (success() || failure()) }}
         env:
           TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_CLOUD_ACCESS_TOKEN }}
         run: terraform init -backend=false
-        continue-on-error: true
 
       - name: Terraform validate
         id: validate
-        if: ${{ !inputs.skip_validate }}
+        if: ${{ !inputs.skip_validate && (success() || failure()) }}
         run: terraform validate -no-color
-        continue-on-error: true
 
       - name: Create job summary
         if: success() || failure()
@@ -62,6 +59,7 @@ jobs:
 
       - name: Load TFLint config
         uses: terraform-linters/tflint-load-config-action@v0
+        if: success() || failure()
         with:
           source-repo: riege/code-quality
           source-path: terraform/.tflint.hcl
@@ -70,25 +68,29 @@ jobs:
           token: ${{ github.token }}
 
       - name: Determine TFLint config file location
+        if: success() || failure()
         run: |
           echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/.tflint.hcl" >> "$GITHUB_ENV"
 
       - name: Cache plugin dir
         uses: actions/cache@v3
+        if: success() || failure()
         with:
           path: ~/.tflint.d/plugins
           key: tflint-${{ hashFiles(env.TFLINT_CONFIG_FILE) }}
 
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v3
+        if: success() || failure()
 
       - name: Init TFLint
         run: tflint --init --config="$TFLINT_CONFIG_FILE"
+        if: success() || failure()
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
-        if: github.event_name != 'pull_request'
+        if: ${{ github.event_name != 'pull_request' && (success() || failure()) }}
         run: |
           set +e
           TFLINT_OUTPUT=$(tflint --recursive --config="$TFLINT_CONFIG_FILE")
@@ -103,19 +105,14 @@ jobs:
           exit $EXITCODE
 
       - name: Run TFLint (PR)
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' && (success() || failure()) }}
         run: |
           tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE" > tflint-report.xml
-        continue-on-error: true
 
       - name: Report Result
         uses: jwgmeligmeyling/checkstyle-github-action@master
-        if: github.event_name == 'pull_request' && (success() || failure())
+        if: ${{ github.event_name == 'pull_request' && (success() || failure()) }}
         with:
           title: TFLint Report
           name: TFLint Report
           path: tflint-report.xml
-
-      - name: Fail on error
-        if: failure()
-        run: exit 1
