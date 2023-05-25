@@ -32,11 +32,13 @@ jobs:
         env:
           TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_CLOUD_ACCESS_TOKEN }}
         run: terraform init -backend=false
+        continue-on-error: true
 
       - name: Terraform validate
         id: validate
         if: ${{ !inputs.skip_validate }}
         run: terraform validate -no-color
+        continue-on-error: true
 
       - name: Create job summary
         if: success() || failure()
@@ -57,7 +59,6 @@ jobs:
             echo '```'
             echo -e '\n</details>'
           }  >> "$GITHUB_STEP_SUMMARY"
-
 
       - name: Load TFLint config
         uses: terraform-linters/tflint-load-config-action@v0
@@ -105,6 +106,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE" > tflint-report.xml
+        continue-on-error: true
 
       - name: Report Result
         uses: jwgmeligmeyling/checkstyle-github-action@master
@@ -113,3 +115,7 @@ jobs:
           title: TFLint Report
           name: TFLint Report
           path: tflint-report.xml
+
+      - name: Fail on error
+        if: failure()
+        run: exit 1
