@@ -98,6 +98,6 @@ jobs:
         uses: jwgmeligmeyling/checkstyle-github-action@master
         if: github.event_name == 'pull_request' && (success() || failure())
         with:
-          title: TFLINT Report
-          name: tflint Report
+          title: TFLint Report
+          name: TFLint Report
           path: tflint-report.xml
