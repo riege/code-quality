@@ -28,12 +28,12 @@ jobs:
 
       - name: Terraform init
         id: init
-        if: !inputs.skip_init
+        if: ${{ !inputs.skip_init }}
         run: terraform init -backend=false
 
       - name: Terraform validate
         id: validate
-        if: !inputs.skip_validate
+        if: ${{ !inputs.skip_validate }}
         run: terraform validate -no-color
 
       - name: Create job summary
