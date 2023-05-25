@@ -35,19 +35,22 @@ jobs:
 
       - name: Create job summary
         run: |
-            echo '#### Terraform Format and Style 🖌 `${{ steps.fmt.outcome }}`' >> $GITHUB_STEP_SUMMARY
-            echo '#### Terraform Initialization ⚙️ `${{ steps.init.outcome }}`' >> $GITHUB_STEP_SUMMARY
-            echo '#### Terraform Validation 🤖 `${{ steps.validate.outcome }}`' >> $GITHUB_STEP_SUMMARY
-            echo '<details><summary>Format and Style Output</summary>' >> $GITHUB_STEP_SUMMARY
-            echo -e '\n```' >> $GITHUB_STEP_SUMMARY
-            echo '${{ steps.fmt.outputs.stdout }}' >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
-            echo '<details><summary>Validation Output</summary>' >> $GITHUB_STEP_SUMMARY
-            echo -e '\n```' >> $GITHUB_STEP_SUMMARY
-            echo '${{ steps.validate.outputs.stdout }}' >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
+          {
+            echo '#### Terraform Format and Style 🖌 `${{ steps.fmt.outcome }}`'
+            echo '#### Terraform Initialization ⚙️ `${{ steps.init.outcome }}`'
+            echo '#### Terraform Validation 🤖 `${{ steps.validate.outcome }}`'
+            echo '<details><summary>Format and Style Output</summary>'
+            echo -e '\n```'
+            echo '${{ steps.fmt.outputs.stdout }}'
+            echo '```'
+            echo -e '\n</details>'
+            echo '<details><summary>Validation Output</summary>'
+            echo -e '\n```'
+            echo '${{ steps.validate.outputs.stdout }}'
+            echo '```'
+            echo -e '\n</details>'
+          }  >> $GITHUB_STEP_SUMMARY
+
 
       - name: Load TFLint config
         uses: terraform-linters/tflint-load-config-action@v0
@@ -82,11 +85,13 @@ jobs:
           set +e
           TFLINT_OUTPUT=$(tflint --recursive --config="$TFLINT_CONFIG_FILE")
           EXITCODE=$?
-          echo '<details><summary>TFLint Output</summary>' >> $GITHUB_STEP_SUMMARY
-          echo -e '\n```' >> $GITHUB_STEP_SUMMARY
-          echo "$TFLINT_OUTPUT" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          echo -e '\n</details>' >> $GITHUB_STEP_SUMMARY
+          {
+            echo '<details><summary>TFLint Output</summary>'
+            echo -e '\n```'
+            echo "$TFLINT_OUTPUT"
+            echo '```'
+            echo -e '\n</details>'
+          } >> $GITHUB_STEP_SUMMARY
           exit $EXITCODE
 
       - name: Run TFLint (PR)
