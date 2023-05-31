@@ -58,7 +58,7 @@ jobs:
           }  >> "$GITHUB_STEP_SUMMARY"
 
       - name: Load TFLint config
-        uses: terraform-linters/tflint-load-config-action@v0
+        uses: terraform-linters/tflint-load-config-action@v1
         if: success() || failure()
         with:
           source-repo: riege/code-quality
