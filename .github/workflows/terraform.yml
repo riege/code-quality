@@ -10,6 +10,10 @@ on:
         type: boolean
         description: "Set to 'true' if Terraform validation shall be skipped. Might be necessary in some rare cases."
 
+env:
+  # OpsGenie Terraform provider needs this to be non-empty, even if we only validate the code.
+  OPSGENIE_API_KEY: "123"
+
 jobs:
   terraform:
     name: Check Terraform
