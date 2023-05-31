@@ -12,7 +12,7 @@ on:
 
 env:
   # OpsGenie Terraform provider needs this to be non-empty, even if we only validate the code.
-  OPSGENIE_API_KEY: "123" 
+  OPSGENIE_API_KEY: "123"
 
 jobs:
   terraform:
