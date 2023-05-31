@@ -65,3 +65,4 @@ jobs:
           VALIDATE_KUBERNETES_KUBEVAL: false
           YAML_CONFIG_FILE: yaml/.yaml-lint.yml
           TERRAFORM_TFLINT_CONFIG_FILE: terraform/.tflint.hcl
+          SQLFLUFF_CONFIG_FILE: sqlfluff/.sqlfluff-lint
