@@ -4,4 +4,4 @@
 
   # Supported dialects https://docs.sqlfluff.com/en/stable/dialects.html
   # Or run 'sqlfluff dialects'
-  dialect = snowflake
+  dialect = mysql
