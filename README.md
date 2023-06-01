@@ -13,14 +13,22 @@ Add a new workflow file like [this one](.github/workflows/lint.yml) or add the f
     uses: "riege/code-quality/.github/workflows/super-linter.yml@main"
 ```
 
-## Terraform TFLint
+## Terraform
 
-This workflow is intended for repositories consisting of Terraform files only. It's super small and fast and properly lints child modules.
+The workflow `terraform.yml` is intended for repositories consisting of Terraform files only. It's small and fast and properly checks Terraform configurations.
 
 Usage:
 
 ```yaml
 jobs:
   lint:
-    uses: riege/code-quality/.github/workflows/tflint.yml@main
+    uses: riege/code-quality/.github/workflows/terraform.yml@main
+    with:
+      skip_init: false
+      skip_validate: false
+    secrets: inherit
 ```
+
+- use `skip_init: true` if `terraform init` doesn't work properly during workflow run.
+- use `skip_validate: true` if `terraform validate` doesn't work properly during workflow run.
+- use `secrets: inherit` if you need access to Terraform Cloud e.g. to use Terraform workspaces in `data` sources.
