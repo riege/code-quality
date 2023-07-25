@@ -1,0 +1,22 @@
+#Organize Import Order
+#Thu Jul 20 16:55:53 CEST 2023
+0=io
+1=java
+2=javax
+3=jakarta
+4=junit
+5=org
+6=com
+7=com.jgoodies
+8=com.riege
+9=
+10=\#io
+11=\#java
+12=\#javax
+13=\#jakarta
+14=\#junit
+15=\#org
+16=\#com
+17=\#com.jgoodies
+18=\#com.riege
+19=\#
