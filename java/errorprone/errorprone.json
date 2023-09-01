@@ -1,0 +1,9 @@
+{
+  "checks": {
+    "NullAway": "ERROR"
+  },
+  "options": {
+    "NullAway:AnnotatedPackages": "com.riege",
+    "NullAway:ExcludedFieldAnnotations": "[a-zA-Z0-9.]*.(ConfigProperty|RestClient)"
+  }
+}
