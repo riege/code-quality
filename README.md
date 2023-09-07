@@ -22,7 +22,7 @@ Usage:
 ```yaml
 jobs:
   lint:
-    uses: riege/code-quality/.github/workflows/terraform.yml@main
+    uses: riege/code-quality/.github/workflows/terraform.yml@v1.0.0
     with:
       skip_init: false
       skip_validate: false
