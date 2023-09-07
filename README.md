@@ -10,7 +10,7 @@ Add a new workflow file like [this one](.github/workflows/lint.yml) or add the f
 
 ```yaml
   call-lint-workflow:
-    uses: "riege/code-quality/.github/workflows/super-linter.yml@main"
+    uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
 ```
 
 ## Terraform
