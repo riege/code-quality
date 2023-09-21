@@ -32,3 +32,9 @@ rule "terraform_standard_module_structure" {
 rule "terraform_required_providers" {
   enabled = false
 }
+
+# we require all providers used by child modules in the root module
+# this is for Renovate to help us with tracking upgrades automatically
+rule "terraform_unused_required_providers" {
+  enabled = false
+}
