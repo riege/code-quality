@@ -10,7 +10,7 @@ exclude_paths:
   - "super-linter"
 use_default_rules: true
 mock_modules:
- - community.general
+  - community.general
 verbosity: 1
 skip_list:
   - yaml
