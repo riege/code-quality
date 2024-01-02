@@ -9,6 +9,8 @@ exclude_paths:
   - /github/workspace/docs/
   - "super-linter"
 use_default_rules: true
+mock_modules:
+  - community.general
 verbosity: 1
 skip_list:
   - yaml
