@@ -1,8 +1,8 @@
 # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/config.md
 # https://github.com/github/super-linter/blob/main/TEMPLATES/.tflint.hcl
 config {
-  module = false
-  force  = false
+  call_module_type = "none"
+  force            = false
 }
 
 plugin "terraform" {

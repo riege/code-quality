@@ -39,6 +39,8 @@ jobs:
       - name: Terraform validate
         id: validate
         if: ${{ !inputs.skip_validate && (success() || failure()) }}
+        env:
+          ARM_SUBSCRIPTION_ID: 0caa8408-f721-4bd2-8b21-e5cb6ac8891d  # dummy subscription ID to silence missing argument error since azurerm v4
         run: terraform validate -no-color
 
       - name: Create job summary
