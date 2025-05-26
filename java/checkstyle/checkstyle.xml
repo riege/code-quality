@@ -29,7 +29,7 @@
     </module>
     <module name="LineLength">
         <property name="ignorePattern"
-                  value="^ *(((public|private|protected)? (static final|abstract))|@ImportFieldCompletion|@Update|@Field|@AttributeOverride|public (abstract |final )?(class|interface|enum)|assertEquals|[\p{Upper}\p{Digit}_]* *(\(|,))"/>
+                  value="^(package|import) .*|^ *(((public|private|protected)? (static final|abstract))|@ImportFieldCompletion|@Update|@Field|@AttributeOverride|public (abstract |final )?(class|interface|enum)|assertEquals|[\p{Upper}\p{Digit}_]* *(\(|,))"/>
         <property name="max" value="100"/>
         <property name="fileExtensions" value="java"/>
     </module>
