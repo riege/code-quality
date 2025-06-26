@@ -61,7 +61,7 @@ jobs:
         run: git config --global url."https://${{ github.token }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 
       - name: Lint Code Base
-        uses: github/super-linter/slim@v5
+        uses: github/super-linter/slim@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
