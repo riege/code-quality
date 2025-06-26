@@ -78,7 +78,7 @@ jobs:
           echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/.tflint.hcl" >> "$GITHUB_ENV"
 
       - name: Cache plugin dir
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: success() || failure()
         with:
           path: ~/.tflint.d/plugins
