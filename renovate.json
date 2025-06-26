@@ -1,4 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>riege/renovate-config"]
+  "extends": [
+    "config:base"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "platformAutomerge": true,
+  "platformCommit": "enabled",
+  "separateMinorPatch": true,
+  "packageRules": [
+    {
+      "description": "Auto-merge patch and digest updates",
+      "matchUpdateTypes": ["patch", "digest"],
+      "automerge": true,
+      "addLabels": ["automerge"]
+    }
+  ]
 }
