@@ -9,6 +9,10 @@ on:
       skip_validate:
         type: boolean
         description: "Set to 'true' if Terraform validation shall be skipped. Might be necessary in some rare cases."
+      terraform_directory:
+        type: string
+        description: "Path to the Terraform directory. Defaults to the root of the repository."
+        default: "."
 
 env:
   # OpsGenie Terraform provider needs this to be non-empty, even if we only validate the code.
@@ -24,6 +28,10 @@ jobs:
 
       - name: Setup terraform
         uses: hashicorp/setup-terraform@v2
+
+      - name: Change working directory
+        run: cd ${{ inputs.terraform_directory }}
+        if: ${{ inputs.terraform_directory != '.' }}
 
       - name: Terraform fmt
         id: fmt
@@ -69,13 +77,13 @@ jobs:
         with:
           source-repo: riege/code-quality
           source-path: terraform/.tflint.hcl
-          destination-path: ${{ github.workspace }}/.tflint.hcl
+          destination-path: ${{ github.workspace }}/${{ inputs.terraform_directory }}/.tflint.hcl
           token: ${{ github.token }}
 
       - name: Determine TFLint config file location
         if: success() || failure()
         run: |
-          echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/.tflint.hcl" >> "$GITHUB_ENV"
+          echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/${{ inputs.terraform_directory }}/.tflint.hcl" >> "$GITHUB_ENV"
 
       - name: Cache plugin dir
         uses: actions/cache@v3
@@ -112,7 +120,7 @@ jobs:
       - name: Run TFLint (PR)
         if: ${{ github.event_name == 'pull_request' && (success() || failure()) }}
         run: |
-          tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE" > tflint-report.xml
+          tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE" > ${{ github.workspace }}/tflint-report.xml
 
       - name: Report Result
         uses: jwgmeligmeyling/checkstyle-github-action@master
@@ -120,4 +128,4 @@ jobs:
         with:
           title: TFLint Report
           name: TFLint Report
-          path: tflint-report.xml
+          path: ${{ github.workspace }}/tflint-report.xml
