@@ -83,21 +83,22 @@ jobs:
       - name: Determine TFLint config file location
         if: success() || failure()
         run: |
-          echo "TFLINT_CONFIG_FILE=${{ github.workspace }}/${{ inputs.terraform_directory }}/.tflint.hcl" >> "$GITHUB_ENV"
+          echo "TFLINT_CONFIG_FILE_ABS=${{ github.workspace }}/${{ inputs.terraform_directory }}/.tflint.hcl" >> "$GITHUB_ENV"
+          echo "TFLINT_CONFIG_FILE_REL=${{ inputs.terraform_directory }}/.tflint.hcl" >> "$GITHUB_ENV"
 
       - name: Cache plugin dir
         uses: actions/cache@v4
         if: success() || failure()
         with:
           path: ~/.tflint.d/plugins
-          key: tflint-${{ hashFiles(env.TFLINT_CONFIG_FILE) }}
+          key: tflint-${{ hashFiles(env.TFLINT_CONFIG_FILE_REL) }}
 
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
         if: success() || failure()
 
       - name: Init TFLint
-        run: tflint --init --config="$TFLINT_CONFIG_FILE"
+        run: tflint --init --config="$TFLINT_CONFIG_FILE_ABS"
         if: success() || failure()
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -106,7 +107,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && (success() || failure()) }}
         run: |
           set +e
-          TFLINT_OUTPUT=$(tflint --recursive --config="$TFLINT_CONFIG_FILE")
+          TFLINT_OUTPUT=$(tflint --recursive --config="$TFLINT_CONFIG_FILE_ABS")
           EXITCODE=$?
           {
             echo '<details><summary>TFLint Output</summary>'
@@ -120,7 +121,7 @@ jobs:
       - name: Run TFLint (PR)
         if: ${{ github.event_name == 'pull_request' && (success() || failure()) }}
         run: |
-          tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE" > ${{ github.workspace }}/tflint-report.xml
+          tflint --format=checkstyle --recursive --config="$TFLINT_CONFIG_FILE_ABS" > ${{ github.workspace }}/tflint-report.xml
 
       - name: Report Result
         uses: jwgmeligmeyling/checkstyle-github-action@master
