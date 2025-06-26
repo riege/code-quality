@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "labels": [
     "dependencies"
@@ -12,9 +12,14 @@
   "packageRules": [
     {
       "description": "Auto-merge patch and digest updates",
-      "matchUpdateTypes": ["patch", "digest"],
+      "matchUpdateTypes": [
+        "patch",
+        "digest"
+      ],
       "automerge": true,
-      "addLabels": ["automerge"]
+      "addLabels": [
+        "automerge"
+      ]
     }
   ]
 }
