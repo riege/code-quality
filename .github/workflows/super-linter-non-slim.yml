@@ -53,6 +53,7 @@ jobs:
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
+          CHECKOV_FILE_NAME: checkov/.checkov.yaml
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ github.token }}
           JAVA_FILE_NAME: java/checkstyle/checkstyle.xml

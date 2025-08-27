@@ -1,0 +1,7 @@
+---
+# Don't report passed checks in output
+quiet: true
+
+# Skip specific checks by their Checkov ID
+skip-check:
+  - CKV2_GHA_1 # We want to allow top-level GH Actions permissions to be write-all
