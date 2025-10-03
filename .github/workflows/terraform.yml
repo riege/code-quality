@@ -94,7 +94,7 @@ jobs:
           key: tflint-${{ hashFiles(env.TFLINT_CONFIG_FILE_REL) }}
 
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v5
+        uses: terraform-linters/setup-tflint@v6
         if: success() || failure()
 
       - name: Init TFLint
