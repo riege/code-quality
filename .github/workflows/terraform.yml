@@ -87,7 +87,7 @@ jobs:
           echo "TFLINT_CONFIG_FILE_REL=${{ inputs.terraform_directory }}/.tflint.hcl" >> "$GITHUB_ENV"
 
       - name: Cache plugin dir
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         if: success() || failure()
         with:
           path: ~/.tflint.d/plugins
