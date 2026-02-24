@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
 
       - name: Change working directory
         run: cd ${{ inputs.terraform_directory }}
