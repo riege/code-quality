@@ -49,6 +49,24 @@ with:
   VALIDATE_GITLEAKS: true
 ```
 
+Optional input to enable Markdown Prettier validation:
+
+```yaml
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+with:
+  VALIDATE_MARKDOWN_PRETTIER: true
+```
+
+Optional input to enable YAML Prettier validation:
+
+```yaml
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+with:
+  VALIDATE_YAML_PRETTIER: true
+```
+
 ## Terraform
 
 The workflow `terraform.yml` is intended for repositories consisting of Terraform files only. It's small and fast and properly checks Terraform configurations.

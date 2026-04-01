@@ -54,6 +54,18 @@ on:
         default: false
         description: >
           "Enable Gitleaks validation."
+      VALIDATE_MARKDOWN_PRETTIER:
+        required: false
+        type: boolean
+        default: false
+        description: >
+          "Enable Markdown Prettier validation."
+      VALIDATE_YAML_PRETTIER:
+        required: false
+        type: boolean
+        default: false
+        description: >
+          "Enable YAML Prettier validation."
 
 jobs:
   build:
@@ -73,7 +85,7 @@ jobs:
           ref: ${{ inputs.CODEQUALITY_REF }}
 
       - name: Lint Code Base (include mode)
-        if: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS }}
+        if: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER }}
         uses: github/super-linter@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
@@ -92,12 +104,14 @@ jobs:
           VALIDATE_GITHUB_ACTIONS: ${{ inputs.VALIDATE_GITHUB_ACTIONS && 'true' || '' }}
           VALIDATE_CHECKOV: ${{ inputs.VALIDATE_CHECKOV && 'true' || '' }}
           VALIDATE_GITLEAKS: ${{ inputs.VALIDATE_GITLEAKS && 'true' || '' }}
+          VALIDATE_MARKDOWN_PRETTIER: ${{ inputs.VALIDATE_MARKDOWN_PRETTIER && 'true' || '' }}
+          VALIDATE_YAML_PRETTIER: ${{ inputs.VALIDATE_YAML_PRETTIER && 'true' || '' }}
           YAML_CONFIG_FILE: yaml/.yaml-lint.yml
           TERRAFORM_TFLINT_CONFIG_FILE: terraform/.tflint.hcl
           SQLFLUFF_CONFIG_FILE: sqlfluff/.sqlfluff-lint
 
       - name: Lint Code Base (exclude mode)
-        if: ${{ !(inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS) }}
+        if: ${{ !(inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER) }}
         uses: github/super-linter@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
