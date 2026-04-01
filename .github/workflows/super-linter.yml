@@ -111,7 +111,7 @@ jobs:
 
       - name: Lint Code Base (exclude mode)
         if: ${{ !(inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS) }}
-        uses: github/super-linter@v7
+        uses: github/super-linter/slim@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
