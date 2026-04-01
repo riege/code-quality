@@ -66,13 +66,13 @@ on:
       VALIDATE_MARKDOWN:
         required: false
         type: boolean
-        default: true
+        default: false
         description: >
           "Enable Markdown validation in include mode."
       VALIDATE_YAML:
         required: false
         type: boolean
-        default: true
+        default: false
         description: >
           "Enable YAML validation in include mode."
       VALIDATE_MARKDOWN_PRETTIER:
@@ -109,7 +109,7 @@ jobs:
         run: git config --global url."https://${{ github.token }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 
       - name: Lint Code Base (include mode)
-        if: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER }}
+        if: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN || inputs.VALIDATE_YAML || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER }}
         uses: github/super-linter/slim@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
@@ -136,7 +136,7 @@ jobs:
           SQLFLUFF_CONFIG_FILE: sqlfluff/.sqlfluff-lint
 
       - name: Lint Code Base (exclude mode)
-        if: ${{ !(inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER) }}
+        if: ${{ !(inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN || inputs.VALIDATE_YAML || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER) }}
         uses: github/super-linter/slim@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml

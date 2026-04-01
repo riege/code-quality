@@ -67,22 +67,22 @@ with:
   VALIDATE_YAML_PRETTIER: true
 ```
 
-Optional input to disable Markdown validation in include mode:
+Optional input to enable Markdown validation in include mode:
 
 ```yaml
 call-lint-workflow:
 uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
 with:
-  VALIDATE_MARKDOWN: false
+  VALIDATE_MARKDOWN: true
 ```
 
-Optional input to disable YAML validation in include mode:
+Optional input to enable YAML validation in include mode:
 
 ```yaml
 call-lint-workflow:
 uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
 with:
-  VALIDATE_YAML: false
+  VALIDATE_YAML: true
 ```
 
 ## Terraform
