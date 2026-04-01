@@ -98,7 +98,7 @@ jobs:
 
       - name: Lint Code Base (include mode)
         if: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER }}
-        uses: github/super-linter@v7
+        uses: github/super-linter/slim@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
           ANSIBLE_DIRECTORY: ${{ inputs.ANSIBLE_DIRECTORY }}
