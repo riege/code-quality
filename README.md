@@ -13,6 +13,15 @@ Add a new workflow file like [this one](.github/workflows/lint.yml) or add the f
     uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
 ```
 
+Optional input to enable kubeval for Kubernetes manifests:
+
+```yaml
+  call-lint-workflow:
+    uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+    with:
+      VALIDATE_KUBERNETES_KUBEVAL: true
+```
+
 ## Terraform
 
 The workflow `terraform.yml` is intended for repositories consisting of Terraform files only. It's small and fast and properly checks Terraform configurations.
