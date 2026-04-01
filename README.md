@@ -57,12 +57,12 @@ Usage:
 
 ```yaml
 jobs:
-lint:
-  uses: riege/code-quality/.github/workflows/terraform.yml@v1.0.0
-  with:
-    skip_init: false
-    skip_validate: false
-  secrets: inherit
+  lint:
+    uses: riege/code-quality/.github/workflows/terraform.yml@v1.0.0
+    with:
+      skip_init: false
+      skip_validate: false
+    secrets: inherit
 ```
 
 - use `skip_init: true` if `terraform init` doesn't work properly during workflow run.
