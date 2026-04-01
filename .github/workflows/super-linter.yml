@@ -63,6 +63,18 @@ on:
         default: false
         description: >
           "Enable Gitleaks validation."
+      VALIDATE_MARKDOWN:
+        required: false
+        type: boolean
+        default: true
+        description: >
+          "Enable Markdown validation in include mode."
+      VALIDATE_YAML:
+        required: false
+        type: boolean
+        default: true
+        description: >
+          "Enable YAML validation in include mode."
       VALIDATE_MARKDOWN_PRETTIER:
         required: false
         type: boolean
@@ -111,8 +123,8 @@ jobs:
           LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/"
           MARKDOWN_CONFIG_FILE: markdown/.markdown-lint.yml
           VALIDATE_ALL_CODEBASE: "${{ inputs.VALIDATE_ALL_CODEBASE }}"
-          VALIDATE_MARKDOWN: "true"
-          VALIDATE_YAML: "true"
+          VALIDATE_MARKDOWN: ${{ inputs.VALIDATE_MARKDOWN && 'true' || '' }}
+          VALIDATE_YAML: ${{ inputs.VALIDATE_YAML && 'true' || '' }}
           VALIDATE_KUBERNETES_KUBEVAL: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL && 'true' || '' }}
           VALIDATE_GITHUB_ACTIONS: ${{ inputs.VALIDATE_GITHUB_ACTIONS && 'true' || '' }}
           VALIDATE_CHECKOV: ${{ inputs.VALIDATE_CHECKOV && 'true' || '' }}
