@@ -9,8 +9,44 @@ Use this workflow if your repository consists of multiple file formats (e.g. Jav
 Add a new workflow file like [this one](.github/workflows/lint.yml) or add the following lines to a existing workflow:
 
 ```yaml
-  call-lint-workflow:
-    uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+```
+
+Optional input to enable kubeval for Kubernetes manifests:
+
+```yaml
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+with:
+  VALIDATE_KUBERNETES_KUBEVAL: true
+```
+
+Optional input to enable GitHub Actions validation:
+
+```yaml
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+with:
+  VALIDATE_GITHUB_ACTIONS: true
+```
+
+Optional input to enable Checkov validation:
+
+```yaml
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+with:
+  VALIDATE_CHECKOV: true
+```
+
+Optional input to enable Gitleaks validation:
+
+```yaml
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+with:
+  VALIDATE_GITLEAKS: true
 ```
 
 ## Terraform
@@ -21,12 +57,12 @@ Usage:
 
 ```yaml
 jobs:
-  lint:
-    uses: riege/code-quality/.github/workflows/terraform.yml@v1.0.0
-    with:
-      skip_init: false
-      skip_validate: false
-    secrets: inherit
+lint:
+  uses: riege/code-quality/.github/workflows/terraform.yml@v1.0.0
+  with:
+    skip_init: false
+    skip_validate: false
+  secrets: inherit
 ```
 
 - use `skip_init: true` if `terraform init` doesn't work properly during workflow run.
