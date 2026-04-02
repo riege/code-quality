@@ -22,6 +22,16 @@ with:
   VALIDATE_KUBERNETES_KUBEVAL: true
 ```
 
+Optional input to control which files kubeval validates:
+
+```yaml
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+with:
+  VALIDATE_KUBERNETES_KUBEVAL: true
+  KUBERNETES_KUBEVAL_FILE_NAME: \\.ya?ml$
+```
+
 Optional input to enable GitHub Actions validation:
 
 ```yaml
@@ -47,6 +57,15 @@ call-lint-workflow:
 uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
 with:
   VALIDATE_GITLEAKS: true
+```
+
+Optional input to enable ShellCheck validation:
+
+```yaml
+call-lint-workflow:
+uses: "riege/code-quality/.github/workflows/super-linter.yml@v1.0.0"
+with:
+  VALIDATE_BASH: true
 ```
 
 Optional input to enable Markdown Prettier validation:

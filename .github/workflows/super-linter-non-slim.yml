@@ -36,6 +36,12 @@ on:
         default: false
         description: >
           "Enable kubeval validation for Kubernetes manifests."
+      KUBERNETES_KUBEVAL_FILE_NAME:
+        required: false
+        type: string
+        default: ""
+        description: >
+          "Regex to select Kubernetes manifest files for kubeval."
       VALIDATE_GITHUB_ACTIONS:
         required: false
         type: boolean
@@ -54,6 +60,12 @@ on:
         default: false
         description: >
           "Enable Gitleaks validation."
+      VALIDATE_BASH:
+        required: false
+        type: boolean
+        default: false
+        description: >
+          "Enable ShellCheck validation."
       VALIDATE_MARKDOWN:
         required: false
         type: boolean
@@ -97,7 +109,7 @@ jobs:
           ref: ${{ inputs.CODEQUALITY_REF }}
 
       - name: Lint Code Base (include mode)
-        if: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN || inputs.VALIDATE_YAML || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER }}
+        if: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_BASH || inputs.VALIDATE_MARKDOWN || inputs.VALIDATE_YAML || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER }}
         uses: github/super-linter@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
@@ -106,16 +118,19 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ github.token }}
           JAVA_FILE_NAME: java/checkstyle/checkstyle.xml
+          KUBERNETES_KUBEVAL_FILE_NAME: "${{ inputs.KUBERNETES_KUBEVAL_FILE_NAME }}"
           KUBERNETES_KUBEVAL_OPTIONS: --ignore-missing-schemas
           LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/"
           MARKDOWN_CONFIG_FILE: markdown/.markdown-lint.yml
           VALIDATE_ALL_CODEBASE: "${{ inputs.VALIDATE_ALL_CODEBASE }}"
+          # Super-linter treats any set VALIDATE_* env as enabled; keep empty unless true.
           VALIDATE_MARKDOWN: ${{ inputs.VALIDATE_MARKDOWN && 'true' || '' }}
           VALIDATE_YAML: ${{ inputs.VALIDATE_YAML && 'true' || '' }}
           VALIDATE_KUBERNETES_KUBEVAL: ${{ inputs.VALIDATE_KUBERNETES_KUBEVAL && 'true' || '' }}
           VALIDATE_GITHUB_ACTIONS: ${{ inputs.VALIDATE_GITHUB_ACTIONS && 'true' || '' }}
           VALIDATE_CHECKOV: ${{ inputs.VALIDATE_CHECKOV && 'true' || '' }}
           VALIDATE_GITLEAKS: ${{ inputs.VALIDATE_GITLEAKS && 'true' || '' }}
+          VALIDATE_BASH: ${{ inputs.VALIDATE_BASH && 'true' || '' }}
           VALIDATE_MARKDOWN_PRETTIER: ${{ inputs.VALIDATE_MARKDOWN_PRETTIER && 'true' || '' }}
           VALIDATE_YAML_PRETTIER: ${{ inputs.VALIDATE_YAML_PRETTIER && 'true' || '' }}
           YAML_CONFIG_FILE: yaml/.yaml-lint.yml
@@ -123,7 +138,7 @@ jobs:
           SQLFLUFF_CONFIG_FILE: sqlfluff/.sqlfluff-lint
 
       - name: Lint Code Base (exclude mode)
-        if: ${{ !(inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_MARKDOWN || inputs.VALIDATE_YAML || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER) }}
+        if: ${{ !(inputs.VALIDATE_KUBERNETES_KUBEVAL || inputs.VALIDATE_GITHUB_ACTIONS || inputs.VALIDATE_CHECKOV || inputs.VALIDATE_GITLEAKS || inputs.VALIDATE_BASH || inputs.VALIDATE_MARKDOWN || inputs.VALIDATE_YAML || inputs.VALIDATE_MARKDOWN_PRETTIER || inputs.VALIDATE_YAML_PRETTIER) }}
         uses: github/super-linter@v7
         env:
           ANSIBLE_CONFIG_FILE: ansible/.ansible-lint.yml
@@ -132,6 +147,7 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ github.token }}
           JAVA_FILE_NAME: java/checkstyle/checkstyle.xml
+          # KUBERNETES_KUBEVAL_FILE_NAME: "${{ inputs.KUBERNETES_KUBEVAL_FILE_NAME }}"
           KUBERNETES_KUBEVAL_OPTIONS: --ignore-missing-schemas
           LINTER_RULES_PATH: "${{ inputs.CODEQUALITY_PATH }}/"
           MARKDOWN_CONFIG_FILE: markdown/.markdown-lint.yml
