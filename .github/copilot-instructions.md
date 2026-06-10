@@ -14,7 +14,7 @@ This repository is not an application runtime project. Changes should focus on w
 
 The reusable workflow behavior is based on the official `super-linter` project:
 
-- https://github.com/super-linter/super-linter
+- <https://github.com/super-linter/super-linter>
 
 Scope of this dependency policy:
 
