@@ -1,0 +1,13 @@
+title = "gitleaks config for grafana-dashboards"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Allow Grafana panel target key identifiers in dashboard JSON files"
+paths = [
+  '''^dashboards(?:-fra)?/.+\.json$''',
+]
+regexes = [
+  '''"key"\s*:\s*"Q-[0-9a-fA-F-]+-[0-9]+"''',
+]
