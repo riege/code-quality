@@ -5,9 +5,10 @@ useDefault = true
 
 [[allowlists]]
 description = "Allow Grafana panel target key identifiers in dashboard JSON files"
+condition = "AND"
 paths = [
-  '''^dashboards(?:-fra)?/.+\.json$''',
+  '''(^|.*/)dashboards(?:-fra)?/.+\.json$''',
 ]
 regexes = [
-  '''"key"\s*:\s*"Q-[0-9a-fA-F-]+-[0-9]+"''',
+  '''"key"\s*:\s*"(?:Q-[0-9a-fA-F-]+-[0-9]+|[A-Za-z0-9_.:-]{6,128})"''',
 ]
