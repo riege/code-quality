@@ -124,12 +124,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Checkout code-quality Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: riege/code-quality
           path: ${{ inputs.CODEQUALITY_PATH }}
