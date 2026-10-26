@@ -13,7 +13,7 @@ plugin "terraform" {
 # add special rules for MS Azure Resource Manager
 plugin "azurerm" {
   enabled = true
-  version = "0.32.0"
+  version = "0.33.0"
   source  = "github.com/terraform-linters/tflint-ruleset-azurerm"
 }
 
