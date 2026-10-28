@@ -23,6 +23,7 @@ KEEP_HOOK_TEMP_DIR=0
 RECOVERY_PATCH_READY=0
 HIDDEN_TRACKED_CHANGES=0
 
+# shellcheck disable=SC2329
 cleanupHookTempDir() {
 	# Most runs should leave no temp files behind. The only time we keep the temp
 	# dir is when the recovery patch may still be needed by the user.
@@ -36,6 +37,7 @@ if [ ! -d "$HOOK_TEMP_DIR" ]; then
 	exit 1
 fi
 
+# shellcheck disable=SC2329
 handleSignal() {
 	SIGNAL_NAME="$1"
 	EXIT_CODE="$2"
@@ -116,6 +118,8 @@ stagePartiallyStagedFiles() {
 		# formatted the staged hunk, and then reapplied the old unstaged hunk, the
 		# reapply step would be much more likely to conflict or reintroduce stale
 		# formatting. Promoting the whole file is the least surprising behavior.
+		# The script is passed literally so its variables expand in the child shell.
+		# shellcheck disable=SC2016
 		if ! xargs -0 sh -c '
         for file do
           if ! git diff --quiet -- "$file"; then
