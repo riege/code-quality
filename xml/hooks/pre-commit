@@ -23,7 +23,7 @@ KEEP_HOOK_TEMP_DIR=0
 RECOVERY_PATCH_READY=0
 HIDDEN_TRACKED_CHANGES=0
 
-# shellcheck disable=SC2329
+# shellcheck disable=SC2317,SC2329
 cleanupHookTempDir() {
 	# Most runs should leave no temp files behind. The only time we keep the temp
 	# dir is when the recovery patch may still be needed by the user.
@@ -37,7 +37,7 @@ if [ ! -d "$HOOK_TEMP_DIR" ]; then
 	exit 1
 fi
 
-# shellcheck disable=SC2329
+# shellcheck disable=SC2317,SC2329
 handleSignal() {
 	SIGNAL_NAME="$1"
 	EXIT_CODE="$2"
