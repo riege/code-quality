@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Source: https://github.com/mrlonis/maven-spotless-hooks
+
+# We pass in ratchetFrom here to ensure that we only format the files that have changed since the last commit
+if command -v gradle >/dev/null 2>&1; then  # Check if gradle command exists to support GitHub Desktop on Windows
+	gradle spotlessApply -DratchetFrom=HEAD -q # Requires Gradle to be installed
+else
+	./gradlew spotlessApply -DratchetFrom=HEAD -q # Otherwise call Gradle wrapper for Mac-OS / Unix / Git for Windows
+fi
