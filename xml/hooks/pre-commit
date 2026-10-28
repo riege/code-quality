@@ -1,0 +1,250 @@
+#!/bin/sh
+# Hook strategy:
+# 1. Promote only partially staged tracked files so Spotless sees the whole file.
+# 2. Hide fully unstaged tracked changes behind a temporary patch.
+# 3. Run Spotless and re-stage its edits.
+# 4. Re-apply the hidden patch so fully unstaged work stays out of the commit.
+#
+# We avoid git stash here on purpose. A stash-based flow mutates shared repo
+# state, can interfere with a user's existing stash entries, and restores via a
+# merge-like operation. A local patch is narrower and easier to recover from.
+
+# Source: https://github.com/mrlonis/maven-spotless-hooks
+
+# The temp workspace stores NUL-delimited path lists plus the recovery patch for
+# fully unstaged tracked changes. On restore failure we intentionally keep this
+# directory around so the user still has a manual recovery artifact.
+HOOK_TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/gradle-spotless-hooks.XXXXXX")"
+TRACKED_STAGED_CHANGES_FILE="$HOOK_TEMP_DIR/tracked-staged-changes"
+PARTIALLY_STAGED_FILES_FILE="$HOOK_TEMP_DIR/partially-staged-files"
+TRACKED_WORKTREE_CHANGES_FILE="$HOOK_TEMP_DIR/tracked-worktree-changes"
+FULLY_UNSTAGED_PATCH_FILE="$HOOK_TEMP_DIR/fully-unstaged.patch"
+KEEP_HOOK_TEMP_DIR=0
+RECOVERY_PATCH_READY=0
+HIDDEN_TRACKED_CHANGES=0
+
+cleanupHookTempDir() {
+	# Most runs should leave no temp files behind. The only time we keep the temp
+	# dir is when the recovery patch may still be needed by the user.
+	if [ "$KEEP_HOOK_TEMP_DIR" -ne 1 ] && [ -n "$HOOK_TEMP_DIR" ] && [ -d "$HOOK_TEMP_DIR" ]; then
+		rm -rf "$HOOK_TEMP_DIR"
+	fi
+}
+
+if [ ! -d "$HOOK_TEMP_DIR" ]; then
+	echo "[git pre-commit hook] - Failed to create temporary workspace. Aborting commit!"
+	exit 1
+fi
+
+handleSignal() {
+	SIGNAL_NAME="$1"
+	EXIT_CODE="$2"
+
+	# If the hook is interrupted after writing the recovery patch, keep the temp
+	# dir around. Once fully unstaged tracked changes have been hidden, that patch
+	# becomes the only copy of them until restoreFullyUnstagedTrackedChanges runs.
+	if [ "$RECOVERY_PATCH_READY" -eq 1 ]; then
+		preserveRecoveryArtifacts
+		echo "[git pre-commit hook] - Received $SIGNAL_NAME before cleanup completed."
+		if [ "$HIDDEN_TRACKED_CHANGES" -eq 1 ]; then
+			echo "[git pre-commit hook] - Fully unstaged tracked changes are stored in the preserved recovery patch."
+			echo "[git pre-commit hook] - You can re-apply them manually with: git apply \"$FULLY_UNSTAGED_PATCH_FILE\""
+		fi
+	fi
+
+	exit "$EXIT_CODE"
+}
+
+abortCommit() {
+	echo "[git pre-commit hook] - $1"
+	exit "${2:-1}"
+}
+
+preserveRecoveryArtifacts() {
+	# Restore failures are the one path where we prefer debuggability and manual
+	# recovery over aggressive cleanup.
+	KEEP_HOOK_TEMP_DIR=1
+	echo "[git pre-commit hook] - Preserving recovery artifacts at $HOOK_TEMP_DIR"
+	echo "[git pre-commit hook] - Hidden changes patch: $FULLY_UNSTAGED_PATCH_FILE"
+}
+
+handleMergeCommit() {
+	# Let merge commits through untouched. Merge conflict resolution and
+	# merge-generated commit contents are outside the scope of this formatter hook.
+	if [ -f .git/MERGE_HEAD ]; then
+		echo "[git pre-commit hook] - Merge in progress. Exiting pre-commit hook."
+		exit 0
+	fi
+}
+
+handleEmptyCommitAtStart() {
+	# Git still runs pre-commit for some commits where the index is empty. There is
+	# nothing to format in that case, so exit before touching the worktree.
+	git diff --cached --quiet
+	GIT_DIFF=$?
+	if [ "$GIT_DIFF" -eq 0 ]; then
+		echo "[git pre-commit hook] - No changes to commit! This is likely a rebase or merge commit. Exiting pre-commit hook."
+		exit 0
+	fi
+}
+
+listTrackedWorktreeChanges() {
+	# After partially staged files are promoted, the remaining tracked worktree
+	# diffs are the fully unstaged tracked changes we need to hide temporarily.
+	git diff --name-only -z >"$TRACKED_WORKTREE_CHANGES_FILE"
+}
+
+listTrackedStagedChanges() {
+	# Include staged adds here too. A newly added file can still be partially
+	# staged, and it needs the same "promote the whole file before formatting"
+	# treatment as an already tracked file. We exclude only deletions because
+	# there is no worktree content left to format or promote.
+	git diff --name-only --cached --diff-filter=d -z >"$TRACKED_STAGED_CHANGES_FILE"
+}
+
+stagePartiallyStagedFiles() {
+	: >"$PARTIALLY_STAGED_FILES_FILE"
+	if ! listTrackedStagedChanges; then
+		abortCommit "Failed to inspect staged files. Aborting commit!"
+	fi
+
+	if [ -s "$TRACKED_STAGED_CHANGES_FILE" ]; then
+		# A file is partially staged when it appears in the index diff and still has
+		# worktree changes afterwards. We promote only that intersection.
+		#
+		# This is intentional: if we hid the unstaged hunk of a partially staged file,
+		# formatted the staged hunk, and then reapplied the old unstaged hunk, the
+		# reapply step would be much more likely to conflict or reintroduce stale
+		# formatting. Promoting the whole file is the least surprising behavior.
+		if ! xargs -0 sh -c '
+        for file do
+          if ! git diff --quiet -- "$file"; then
+            printf "%s\000" "$file"
+          fi
+        done
+      ' sh <"$TRACKED_STAGED_CHANGES_FILE" >"$PARTIALLY_STAGED_FILES_FILE"; then
+			abortCommit "Failed to identify partially staged files. Aborting commit!"
+		fi
+	fi
+
+	if [ -s "$PARTIALLY_STAGED_FILES_FILE" ] &&
+		! git add --pathspec-from-file="$PARTIALLY_STAGED_FILES_FILE" --pathspec-file-nul; then
+		abortCommit "Failed to promote partially staged files. Please refresh your index and try again."
+	fi
+}
+
+hideFullyUnstagedTrackedChanges() {
+	: >"$FULLY_UNSTAGED_PATCH_FILE"
+	if ! listTrackedWorktreeChanges; then
+		abortCommit "Failed to inspect fully unstaged tracked changes. Aborting commit!"
+	fi
+
+	if [ -s "$TRACKED_WORKTREE_CHANGES_FILE" ]; then
+		# Save the exact unstaged tracked diff, then restore those paths back to
+		# their index state before running Spotless. This keeps unrelated worktree
+		# changes out of the commit without touching the user's stash stack.
+		if ! xargs -0 git -c color.ui=false diff --no-color --binary -- <"$TRACKED_WORKTREE_CHANGES_FILE" >"$FULLY_UNSTAGED_PATCH_FILE"; then
+			abortCommit "Failed to build a recovery patch for fully unstaged tracked changes. Aborting commit!"
+		fi
+		RECOVERY_PATCH_READY=1
+		KEEP_HOOK_TEMP_DIR=1
+		if ! restoreWorktreePaths "$TRACKED_WORKTREE_CHANGES_FILE"; then
+			preserveRecoveryArtifacts
+			abortCommit "Failed to temporarily hide fully unstaged tracked changes. Aborting commit!"
+		fi
+		HIDDEN_TRACKED_CHANGES=1
+	fi
+}
+
+restoreFullyUnstagedTrackedChanges() {
+	# Re-apply the exact hidden patch after Spotless and git add -u have finished.
+	# If this fails, preserve the patch so the user can recover manually.
+	if [ -s "$FULLY_UNSTAGED_PATCH_FILE" ] &&
+		! git apply --whitespace=nowarn "$FULLY_UNSTAGED_PATCH_FILE"; then
+		preserveRecoveryArtifacts
+		echo "[git pre-commit hook] - Failed to restore fully unstaged tracked changes."
+		echo "[git pre-commit hook] - You can re-apply the patch manually with: git apply \"$FULLY_UNSTAGED_PATCH_FILE\""
+		return 1
+	fi
+
+	HIDDEN_TRACKED_CHANGES=0
+	RECOVERY_PATCH_READY=0
+	KEEP_HOOK_TEMP_DIR=0
+}
+
+trap 'cleanupHookTempDir' EXIT
+trap 'handleSignal HUP 129' HUP
+trap 'handleSignal INT 130' INT
+trap 'handleSignal TERM 143' TERM
+
+restoreWorktreePaths() {
+	PATHS_FILE="$1"
+
+	# Prefer git restore when available, but fall back to git checkout for older
+	# Git versions that do not support restore yet.
+	git restore -h >/dev/null 2>&1
+	GIT_RESTORE_HELP_RESULT=$?
+	if [ "$GIT_RESTORE_HELP_RESULT" -eq 0 ] || [ "$GIT_RESTORE_HELP_RESULT" -eq 129 ]; then
+		xargs -0 git restore --worktree -- <"$PATHS_FILE"
+	else
+		xargs -0 git checkout -- <"$PATHS_FILE"
+	fi
+}
+
+spotlessApply() {
+	# ratchetFrom=HEAD keeps Spotless focused on files touched since the last
+	# commit
+	if command -v gradle >/dev/null 2>&1; then  # Check if gradle command exists to support GitHub Desktop on Windows
+		gradle spotlessApply -DratchetFrom=HEAD -q # Requires Gradle to be installed
+	else
+		./gradlew spotlessApply -DratchetFrom=HEAD -q # Otherwise call Gradle wrapper for Mac-OS / Unix / Git for Windows
+	fi
+}
+
+handleEmptyCommitAtEnd() {
+	# Spotless can sometimes erase the last staged difference. Abort instead of
+	# creating an empty commit that looks like the hook silently did nothing.
+	git diff --cached --quiet
+	GIT_DIFF=$?
+	if [ "$GIT_DIFF" -eq 0 ]; then
+		echo "[git pre-commit hook] - No changes to commit! Aborting commit!"
+		exit 1
+	fi
+}
+
+# Main flow:
+# - normalize partial files first
+# - hide unrelated tracked worktree changes
+# - run Spotless
+# - re-stage formatter edits if Spotless succeeds
+# - restore hidden worktree changes
+handleMergeCommit
+handleEmptyCommitAtStart
+stagePartiallyStagedFiles
+hideFullyUnstagedTrackedChanges
+echo "[git pre-commit hook] - Running spotlessApply"
+spotlessApply
+SPOTLESS_APPLY_RESULT=$?
+GIT_ADD_RESULT=0
+if [ "$SPOTLESS_APPLY_RESULT" -eq 0 ]; then
+	# Re-stage formatter edits only after a successful Spotless run. If Spotless
+	# itself fails, leave the index alone and focus on restoring hidden changes.
+	git add -u
+	GIT_ADD_RESULT=$?
+fi
+restoreFullyUnstagedTrackedChanges
+RESTORE_RESULT=$?
+if [ "$RESTORE_RESULT" -ne 0 ]; then
+	echo "[git pre-commit hook] - Failed to restore fully unstaged tracked changes. Aborting commit!"
+	exit "$RESTORE_RESULT"
+fi
+if [ "$SPOTLESS_APPLY_RESULT" -ne 0 ]; then
+	echo "[git pre-commit hook] - spotlessApply failed. Aborting commit without staging formatter edits."
+	exit "$SPOTLESS_APPLY_RESULT"
+fi
+if [ "$GIT_ADD_RESULT" -ne 0 ]; then
+	echo "[git pre-commit hook] - Failed to stage formatted files. Aborting commit!"
+	exit "$GIT_ADD_RESULT"
+fi
+handleEmptyCommitAtEnd
+exit $SPOTLESS_APPLY_RESULT
